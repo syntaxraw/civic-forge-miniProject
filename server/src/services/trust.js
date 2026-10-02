@@ -1,0 +1,4 @@
+import { issues } from '../store.js';
+export async function spamScore({title,description},user){let s=0;const text=`${title} ${description}`;if(description.trim().length<15)s+=.3;if(/(https?:\/\/|www\.)/i.test(text))s+=.3;const letters=text.replace(/[^A-Za-z]/g,'');if(letters.length>12&&letters.replace(/[^A-Z]/g,'').length/letters.length>.7)s+=.2;if(/(.)\1{5,}/.test(text))s+=.3;const lastHour=[...issues.values()].filter(i=>i.reporter===user._id&&new Date(i.createdAt)>new Date(Date.now()-3600e3)).length;if(lastHour>=5)s+=.4;s+=(50-user.trustScore)/100;return Math.max(0,Math.min(1,s));}
+export const isSpam=score=>score>=.6;
+export async function rewardVerified(user,delta=5){user.trustScore=Math.min(100,user.trustScore+delta);user.verifiedReports+=1;user.points+=20;user.badges=[...(user.verifiedReports>=1?['First Responder']:[]),...(user.verifiedReports>=5?['Neighborhood Watch']:[]),...(user.verifiedReports>=15?['Civic Superhero']:[])];}

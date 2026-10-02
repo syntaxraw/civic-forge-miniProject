@@ -1,0 +1,6 @@
+import { issues } from '../store.js';
+const STOP=new Set('a an the is are was were of in on at to for and or with near by from this that it there has have been very not no please sir madam road street area colony'.split(' '));
+const tokens=(s='')=>new Set(s.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu,' ').split(/\s+/).filter(w=>w.length>2&&!STOP.has(w)).map(w=>w.replace(/(ing|ed|es|s)$/,'')));
+export function similarity(a,b){const A=tokens(a),B=tokens(b);if(!A.size||!B.size)return 0;let n=0;A.forEach(t=>B.has(t)&&n++);return n/(A.size+B.size-n);}
+export function haversine([lng1,lat1],[lng2,lat2]){const R=6371000,rad=d=>d*Math.PI/180,dLat=rad(lat2-lat1),dLng=rad(lng2-lng1),x=Math.sin(dLat/2)**2+Math.cos(rad(lat1))*Math.cos(rad(lat2))*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
+export async function findDuplicate({coordinates,category,title,description}){let best=null;for(const c of issues.values()){if(c.hidden||c.status==='Completed'||c.category!==category)continue;const dist=haversine(coordinates,c.location.coordinates);if(dist>150)continue;const sim=similarity(`${title} ${description}`,`${c.title} ${c.description}`);if((dist<=40?sim>=.12:sim>=.25)&&(!best||sim>best.sim))best={issue:c,sim,dist};}return best;}
