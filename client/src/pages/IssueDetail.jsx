@@ -48,7 +48,7 @@ export default function IssueDetail() {
           </div>
           <h1 className="text-2xl font-bold">{t?.title || issue.title}</h1>
           <p className="whitespace-pre-line text-slate-700">{t?.description || issue.description}</p>
-          {lang && !t && <p className="text-xs text-amber-600">Translation unavailable (set ANTHROPIC_API_KEY on the server to enable auto-translation).</p>}
+          {lang && lang !== issue.language && !t && <p className="text-xs text-amber-600">Translation unavailable. Check that GEMINI_API_KEY is configured on the server, then try again.</p>}
           {issue.photos?.length > 0 && <div className="flex flex-wrap gap-2">{issue.photos.map((p) => <img key={p} src={p} className="h-40 rounded-lg object-cover" alt="" />)}</div>}
           <div className="flex items-center gap-3">
             <button onClick={upvote} className={`btn ${issue.hasUpvoted ? 'btn-primary' : 'btn-ghost'}`}>▲ {issue.upvoteCount} {issue.hasUpvoted ? 'Corroborated' : 'I see this too'}</button>

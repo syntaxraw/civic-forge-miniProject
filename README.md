@@ -27,7 +27,7 @@ The server recreates demo users and issues each time it starts. All registration
 - Community upvotes, issue status history, priority ranking, and staff actions
 - Live issue map with WebSocket updates
 - Community leaderboard and status/category stats
-- Optional translation through `ANTHROPIC_API_KEY`
+- Optional translation through Gemini's free API. Add `GEMINI_API_KEY` to `server/.env` (see `server/.env.example`).
 
 ## Build
 
